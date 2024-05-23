@@ -8,5 +8,5 @@ type SensorData struct {
 	Tds         float64   `gorm:"type:decimal(18,2)" json:"tds"`
 	Temperature float64   `gorm:"type:decimal(18,2)" json:"temperature"`
 	Humidity    float64   `gorm:"type:decimal(18,2)" json:"humidity"`
-	CreatedAt   time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	CreatedAt   time.Time `json:"created_at"`
 }
