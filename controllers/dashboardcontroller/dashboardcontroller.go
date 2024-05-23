@@ -2,21 +2,34 @@ package dashboardcontroller
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/jovinkendrico/futurefarmerapi/helper"
+	"github.com/jovinkendrico/futurefarmerapi/models"
+	"gorm.io/gorm"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	data := []map[string]interface{}{
-		{
-			"id":         1,
-			"datetime":   time.Now(),
-			"ph":         6.4,
-			"tds":        25,
-			"suhu":       36,
-			"kelembapan": 21,
-		},
+	var SensorData models.SensorData
+	if err := models.DB.Last(&SensorData).Error; err != nil {
+		switch err {
+		case gorm.ErrRecordNotFound:
+			response := map[string]string{"message": "Record not found"}
+			helper.ResponseJSON(w, http.StatusUnauthorized, response)
+			return
+		default:
+			response := map[string]string{"message": err.Error()}
+			helper.ResponseJSON(w, http.StatusInternalServerError, response)
+			return
+		}
+
+	}
+	data := map[string]interface{}{
+		"id":         SensorData.Id,
+		"ph":         SensorData.Ph,
+		"tds":        SensorData.Tds,
+		"suhu":       SensorData.Temperature,
+		"kelembapan": SensorData.Humidity,
+		"created_at": SensorData.CreatedAt,
 	}
 	helper.ResponseJSON(w, http.StatusOK, data)
 }
