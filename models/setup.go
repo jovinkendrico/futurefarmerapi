@@ -75,12 +75,13 @@ func createRelayStatus() {
 
 func createRelayConfig() {
 	relayConfig := RelayConfig{
-		Ph_up:     20,
-		Ph_down:   20,
-		Nut_a:     20,
-		Nut_b:     20,
-		Fan:       20,
-		Light:     20,
+		Ph_up:   20,
+		Ph_down: 20,
+		Nut_A:   20,
+		Nut_B:   20,
+		Fan:     20,
+		Light:   20,
+		IsSync:   1,
 		CreatedAt: time.Now(),
 	}
 
