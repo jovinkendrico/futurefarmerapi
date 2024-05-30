@@ -25,6 +25,7 @@ func main() {
 	r.HandleFunc("/logout", authcontroller.Logout).Methods("GET")
 	r.HandleFunc("/insertdata", datacontroller.InsertData).Methods("POST")
 	r.HandleFunc("/getconfig", configcontroller.GetConfig).Methods("GET")
+	r.HandleFunc("/updaterelay", configcontroller.UpdateRelay).Methods("POST")
 	r.HandleFunc("/relaystatus/{id}", sendcontroller.GetRelayStatus).Methods("GET")
 	r.HandleFunc("/api/v1/dashboard", dashboardcontroller.Index).Methods("GET")
 
