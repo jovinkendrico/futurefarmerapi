@@ -52,6 +52,7 @@ func createRelayConfig(){
 		Nut_B:   20,
 		Fan:     20,
 		Light:   20,
+		IsSync:   1,
 		CreatedAt: time.Now(),
 	}
 

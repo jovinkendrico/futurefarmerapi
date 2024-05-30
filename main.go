@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/jovinkendrico/futurefarmerapi/controllers/authcontroller"
+	"github.com/jovinkendrico/futurefarmerapi/controllers/configcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/dashboardcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/datacontroller"
 	"github.com/jovinkendrico/futurefarmerapi/models"
@@ -22,7 +23,8 @@ func main() {
 	r.HandleFunc("/register", authcontroller.Register).Methods("POST")
 	r.HandleFunc("/logout", authcontroller.Logout).Methods("GET")
 	r.HandleFunc("/insertdata", datacontroller.InsertData).Methods("POST")
+	r.HandleFunc("/getconfig", configcontroller.GetConfig).Methods("GET")
 	r.HandleFunc("/api/v1/dashboard", dashboardcontroller.Index).Methods("GET")
 	fmt.Printf("Server is running !!!")
-	log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
