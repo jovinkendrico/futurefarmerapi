@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -8,11 +10,11 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
-	db, err := gorm.Open(mysql.Open("root:@tcp(localhost:3306)/futurefarmerapi?parseTime=true"))
+	db, err := gorm.Open(mysql.Open("root:@tcp(localhost:3307)/futurefarmerapi?parseTime=true"))
 	if err != nil {
 		panic(err)
 	}
-
+	db.Migrator().DropTable(&User{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&SensorData{})
 	db.AutoMigrate(&RelayStatus{})
@@ -36,7 +38,7 @@ func createRelayStatus(){
 	}
 
 	// Insert the new record into the database
-	result := db.Create(&relayStatus)
+	result := DB.Create(&relayStatus)
 	if result.Error != nil {
 		panic("failed to insert relay status record")
 	}
@@ -54,7 +56,7 @@ func createRelayConfig(){
 	}
 
 	// Insert the new record into the database
-	result := db.Create(&relayConfig)
+	result := DB.Create(&relayConfig)
 	if result.Error != nil {
 		panic("failed to insert relay status record")
 	}
