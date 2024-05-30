@@ -12,5 +12,3 @@ type RelayStatus struct {
 	Light    float64   `gorm:"type:integer" json:"light"`
 	CreatedAt   time.Time `json:"created_at"`
 }
-
-
