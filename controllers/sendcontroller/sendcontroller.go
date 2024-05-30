@@ -1,6 +1,7 @@
 package sendcontroller
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -32,6 +33,15 @@ func GetRelayStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var relayConfig models.RelayConfig
+	result := models.DB.First(&relayConfig)
+	if result.Error != nil {
+		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		return
+	}
+
+
+
 	// Check the status of each field
 	statuses := map[string]string{
 		"Relay1_is": checkStatus(relayStatus.Ph_up),
@@ -40,13 +50,14 @@ func GetRelayStatus(w http.ResponseWriter, r *http.Request) {
 		"Relay4_is": checkStatus(relayStatus.Nut_b),
 		"Relay5_is": checkStatus(relayStatus.Fan),
 		"Relay6_is": checkStatus(relayStatus.Light),
+		"is_sync": fmt.Sprintf("%d", relayConfig.IsSync),
 	}
 
 	// Respond with the statuses in JSON format
 	helper.ResponseJSON(w, http.StatusOK, statuses)
 }
 
-func checkStatus(value float64) string {
+func checkStatus(value int64) string {
 	if value == 1 {
 		return "on"
 	}
