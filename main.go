@@ -20,14 +20,19 @@ func main() {
 	models.ConnectDatabase()
 	r := mux.NewRouter()
 
-	r.HandleFunc("/login", authcontroller.Login).Methods("POST")
-	r.HandleFunc("/register", authcontroller.Register).Methods("POST")
-	r.HandleFunc("/logout", authcontroller.Logout).Methods("GET")
+	//IOT API
 	r.HandleFunc("/insertdata", datacontroller.InsertData).Methods("POST")
 	r.HandleFunc("/getconfig", configcontroller.GetConfig).Methods("GET")
 	r.HandleFunc("/updaterelay", configcontroller.UpdateRelay).Methods("POST")
-	r.HandleFunc("/relaystatus/{id}", sendcontroller.GetRelayStatus).Methods("GET")
+	r.HandleFunc("/relaystatus", sendcontroller.GetRelayStatus).Methods("GET")
+
+	//ANDROID API
+	r.HandleFunc("/api/v1/login", authcontroller.Login).Methods("POST")
+	r.HandleFunc("/api/v1/register", authcontroller.Register).Methods("POST")
+	r.HandleFunc("/api/v1/logout", authcontroller.Logout).Methods("GET")
 	r.HandleFunc("/api/v1/dashboard", dashboardcontroller.Index).Methods("GET")
+	r.HandleFunc("/api/v1/updateconfig", configcontroller.UpdateConfig).Methods("PUT")
+	r.HandleFunc("/api/v1/updaterelay", configcontroller.UpdateRelayStatus).Methods("PUT")
 
 	fmt.Printf("Server is running !!!")
 	log.Fatal(http.ListenAndServe(":8000", r))
