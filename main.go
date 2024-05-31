@@ -32,6 +32,7 @@ func main() {
 	r.HandleFunc("/api/v1/logout", authcontroller.Logout).Methods("GET")
 	r.HandleFunc("/api/v1/dashboard", dashboardcontroller.Index).Methods("GET")
 	r.HandleFunc("/api/v1/updateconfig", configcontroller.UpdateConfig).Methods("PUT")
+	r.HandleFunc("/api/v1/updaterelay", configcontroller.UpdateRelayStatus).Methods("PUT")
 
 	fmt.Printf("Server is running !!!")
 	log.Fatal(http.ListenAndServe(":8000", r))

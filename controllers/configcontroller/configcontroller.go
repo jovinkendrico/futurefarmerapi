@@ -47,6 +47,24 @@ func UpdateConfig(w http.ResponseWriter, r *http.Request) {
 	helper.ResponseJSON(w, http.StatusOK, response)
 }
 
+func UpdateRelayStatus(w http.ResponseWriter, r *http.Request) {
+	var relayStatusInput models.RelayStatus
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&relayStatusInput); err != nil {
+		response := map[string]string{"message": err.Error()}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+	}
+
+	defer r.Body.Close()
+
+	if err := models.DB.Update("1", &relayStatusInput).Error; err != nil {
+		response := map[string]string{"message": err.Error()}
+		helper.ResponseJSON(w, http.StatusInternalServerError, response)
+	}
+	response := map[string]string{"message": "success"}
+	helper.ResponseJSON(w, http.StatusOK, response)
+}
+
 func UpdateRelay(w http.ResponseWriter, r *http.Request) {
 	var relayStatus models.RelayStatus
 	result := models.DB.First(&relayStatus)
