@@ -24,7 +24,7 @@ func main() {
 	r.HandleFunc("/insertdata", datacontroller.InsertData).Methods("POST")
 	r.HandleFunc("/getconfig", configcontroller.GetConfig).Methods("GET")
 	r.HandleFunc("/updaterelay", configcontroller.UpdateRelay).Methods("POST")
-	r.HandleFunc("/relaystatus/{id}", sendcontroller.GetRelayStatus).Methods("GET")
+	r.HandleFunc("/relaystatus", sendcontroller.GetRelayStatus).Methods("GET")
 
 	//ANDROID API
 	r.HandleFunc("/api/v1/login", authcontroller.Login).Methods("POST")
