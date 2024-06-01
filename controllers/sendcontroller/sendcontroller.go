@@ -31,7 +31,13 @@ func GetRelayStatus(w http.ResponseWriter, r *http.Request) {
 		"Relay4_is": checkStatus(relayStatus.Nut_b),
 		"Relay5_is": checkStatus(relayStatus.Fan),
 		"Relay6_is": checkStatus(relayStatus.Light),
-		"is_sync":   fmt.Sprintf("%d", relayConfig.IsSync),
+		"Relay1_manual": strconv.FormatInt(relayStatus.Is_manual_1, 10),
+		"Relay2_manual": strconv.FormatInt(relayStatus.Is_manual_2, 10),
+		"Relay3_manual": strconv.FormatInt(relayStatus.Is_manual_3, 10),
+		"Relay4_manual": strconv.FormatInt(relayStatus.Is_manual_4, 10),
+		"Relay5_manual": strconv.FormatInt(relayStatus.Is_manual_5, 10),
+		"Relay6_manual": strconv.FormatInt(relayStatus.Is_manual_6, 10),
+		"is_sync": fmt.Sprintf("%d", relayConfig.IsSync),
 	}
 
 	// Respond with the statuses in JSON format

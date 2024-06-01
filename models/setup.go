@@ -29,16 +29,17 @@ func ConnectDatabase() {
 	}
 
 	// Perform auto migrations
-	err = db.AutoMigrate(&User{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{})
+	err = db.AutoMigrate(&User{}, &LevelConfig{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{})
 	if err != nil {
 		panic("failed to migrate database")
 	}
-	db.Migrator().DropTable(&User{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{})
+	db.Migrator().DropTable(&User{}, &LevelConfig{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&SensorData{})
 	db.AutoMigrate(&RelayStatus{})
 	db.AutoMigrate(&RelayConfig{})
 	db.AutoMigrate(&RelayHistory{})
+	db.AutoMigrate(&LevelConfig{})
 
 	// Assign the connected DB to the global variable
 	DB = db
@@ -46,6 +47,7 @@ func ConnectDatabase() {
 	// Create initial data if necessary
 	createRelayStatus()
 	createRelayConfig()
+	createLevelConfig()
 }
 
 func createDatabaseIfNotExists(db *gorm.DB, dbName string) {
@@ -73,16 +75,31 @@ func createRelayStatus() {
 	}
 }
 
+func createLevelConfig() {
+	levelConfig := LevelConfig{
+		Ph_low:   5.5,
+		Ph_high: 6.5,
+		Tds: 100,
+		Temperature:     40,
+		Humidity: 70,
+	}
+
+	// Insert the new record into the database
+	result := DB.Create(&levelConfig)
+	if result.Error != nil {
+		panic("failed to insert relay status record")
+	}
+}
+
 func createRelayConfig() {
 	relayConfig := RelayConfig{
-		Ph_up:     1,
-		Ph_down:   20,
-		Nut_A:     20,
-		Nut_B:     20,
-		Fan:       20,
-		Light:     20,
-		IsSync:    1,
-		CreatedAt: time.Now(),
+		Ph_up:   1,
+		Ph_down: 20,
+		Nut_A:   20,
+		Nut_B:   20,
+		Fan:     20,
+		Light:   20,
+		IsSync:   1,
 	}
 
 	// Insert the new record into the database
