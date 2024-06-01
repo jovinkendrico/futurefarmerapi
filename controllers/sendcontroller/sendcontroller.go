@@ -3,6 +3,7 @@ package sendcontroller
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/jovinkendrico/futurefarmerapi/helper"
 	"github.com/jovinkendrico/futurefarmerapi/models"
@@ -25,19 +26,19 @@ func GetRelayStatus(w http.ResponseWriter, r *http.Request) {
 
 	// Check the status of each field
 	statuses := map[string]string{
-		"Relay1_is": checkStatus(relayStatus.Ph_up),
-		"Relay2_is": checkStatus(relayStatus.Ph_down),
-		"Relay3_is": checkStatus(relayStatus.Nut_a),
-		"Relay4_is": checkStatus(relayStatus.Nut_b),
-		"Relay5_is": checkStatus(relayStatus.Fan),
-		"Relay6_is": checkStatus(relayStatus.Light),
+		"Relay1_is":     checkStatus(relayStatus.Ph_up),
+		"Relay2_is":     checkStatus(relayStatus.Ph_down),
+		"Relay3_is":     checkStatus(relayStatus.Nut_a),
+		"Relay4_is":     checkStatus(relayStatus.Nut_b),
+		"Relay5_is":     checkStatus(relayStatus.Fan),
+		"Relay6_is":     checkStatus(relayStatus.Light),
 		"Relay1_manual": strconv.FormatInt(relayStatus.Is_manual_1, 10),
 		"Relay2_manual": strconv.FormatInt(relayStatus.Is_manual_2, 10),
 		"Relay3_manual": strconv.FormatInt(relayStatus.Is_manual_3, 10),
 		"Relay4_manual": strconv.FormatInt(relayStatus.Is_manual_4, 10),
 		"Relay5_manual": strconv.FormatInt(relayStatus.Is_manual_5, 10),
 		"Relay6_manual": strconv.FormatInt(relayStatus.Is_manual_6, 10),
-		"is_sync": fmt.Sprintf("%d", relayConfig.IsSync),
+		"is_sync":       fmt.Sprintf("%d", relayConfig.IsSync),
 	}
 
 	// Respond with the statuses in JSON format

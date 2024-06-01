@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
-
+	"github.com/joho/godotenv"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/authcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/configcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/dashboardcontroller"
@@ -16,7 +17,11 @@ import (
 )
 
 func main() {
+	err := godotenv.Load(".env")
 
+	if err != nil {
+		panic(err)
+	}
 	models.ConnectDatabase()
 	r := mux.NewRouter()
 
@@ -35,5 +40,5 @@ func main() {
 	r.HandleFunc("/api/v1/updaterelay", configcontroller.UpdateRelayStatus).Methods("PUT")
 
 	fmt.Printf("Server is running !!!")
-	log.Fatal(http.ListenAndServe(":8000", r))
+	log.Fatal(http.ListenAndServe(os.Getenv("PORT"), r))
 }

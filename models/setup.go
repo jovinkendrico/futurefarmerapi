@@ -2,8 +2,10 @@ package models
 
 import (
 	"fmt"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -12,7 +14,11 @@ var DB *gorm.DB
 
 func ConnectDatabase() {
 	// Connect to MySQL server without specifying a database
-	dsn := "root:@tcp(localhost:3306)/?parseTime=true"
+	err := godotenv.Load(".env")
+	if err != nil {
+		panic(err)
+	}
+	dsn := os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to MySQL")
@@ -22,7 +28,7 @@ func ConnectDatabase() {
 	createDatabaseIfNotExists(db, "futurefarmerapi")
 
 	// Connect to the `futurefarmerapi` database
-	dsn = "root:@tcp(localhost:3306)/futurefarmerapi?parseTime=true"
+	dsn = os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/?parseTime=true"
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to futurefarmerapi database")
@@ -77,11 +83,11 @@ func createRelayStatus() {
 
 func createLevelConfig() {
 	levelConfig := LevelConfig{
-		Ph_low:   5.5,
-		Ph_high: 6.5,
-		Tds: 100,
-		Temperature:     40,
-		Humidity: 70,
+		Ph_low:      5.5,
+		Ph_high:     6.5,
+		Tds:         100,
+		Temperature: 40,
+		Humidity:    70,
 	}
 
 	// Insert the new record into the database
@@ -99,7 +105,7 @@ func createRelayConfig() {
 		Nut_B:   20,
 		Fan:     20,
 		Light:   20,
-		IsSync:   1,
+		IsSync:  1,
 	}
 
 	// Insert the new record into the database
