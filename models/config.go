@@ -5,7 +5,7 @@ type RelayConfig struct {
 	Ph_up   float64 `gorm:"type:decimal(18,2)" json:"ph_up"`
 	Ph_down float64 `gorm:"type:decimal(18,2)" json:"ph_down"`
 	Nut_A   float64 `gorm:"type:decimal(18,2)" json:"nut_a"`
-	Nut_B   float64 `gorm:"type:decimal(18,2)" json:"nut_B"`
+	Nut_B   float64 `gorm:"type:decimal(18,2)" json:"nut_b"`
 	Fan     float64 `gorm:"type:decimal(18,2)" json:"fan"`
 	Light   float64 `gorm:"type:decimal(18,2)" json:"light"`
 	IsSync  int64   `gorm:"type:integer" json:"is_sync"`
