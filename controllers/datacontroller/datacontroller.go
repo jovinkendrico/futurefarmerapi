@@ -51,12 +51,11 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 
 	// Create a new SensorData instance
 	data := models.SensorData{
-		Ph:       ph,
-		Tds:       tds,
-		Temperature:       temperature,
-		Humidity: humidity,
+		Ph:          ph,
+		Tds:         tds,
+		Temperature: temperature,
+		Humidity:    humidity,
 	}
-
 
 	var levelConfig models.LevelConfig
 	result := models.DB.First(&levelConfig)
@@ -72,11 +71,11 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var DB *gorm.DB
-	if(ph < levelConfig.Ph_low) {
+	if ph < levelConfig.Ph_low {
 		relayStatus.Ph_up = 1
 		relayHistory := models.RelayHistory{
-			Type: "ph_up",
-			Status: "1",
+			Type:   "PH UP",
+			Status: "ON",
 		}
 		result := DB.Create(&relayHistory)
 		if result.Error != nil {
@@ -84,36 +83,36 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
-	if(ph > levelConfig.Ph_high) {
+	if ph > levelConfig.Ph_high {
 		relayStatus.Ph_down = 1
 		relayHistory := models.RelayHistory{
-			Type: "ph_down",
-			Status: "1",
+			Type:   "PH DOWN",
+			Status: "ON",
 		}
 		result := DB.Create(&relayHistory)
 		if result.Error != nil {
 			panic("failed to insert relay status record")
 		}
 	}
-	if(tds < levelConfig.Tds) {
+	if tds < levelConfig.Tds {
 		relayStatus.Nut_a = 1
 		relayStatus.Nut_b = 1
 		relayHistory := models.RelayHistory{
-			Type: "Tds",
-			Status: "1",
+			Type:   "NUTRISI AB",
+			Status: "ON",
 		}
 		result := DB.Create(&relayHistory)
 		if result.Error != nil {
 			panic("failed to insert relay status record")
 		}
-		
+
 	}
 
-	if(temperature < levelConfig.Temperature || humidity < levelConfig.Humidity) {
+	if temperature < levelConfig.Temperature || humidity < levelConfig.Humidity {
 		relayStatus.Fan = 1
 		relayHistory := models.RelayHistory{
-			Type: "fan",
-			Status: "1",
+			Type:   "FAN",
+			Status: "ON",
 		}
 		result := DB.Create(&relayHistory)
 		if result.Error != nil {
@@ -124,9 +123,6 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	if saveResult := models.DB.Save(&relayStatus); saveResult.Error != nil {
 		http.Error(w, saveResult.Error.Error(), http.StatusInternalServerError)
 	}
-
-
-
 
 	// Insert the data into the database
 	if err := models.DB.Create(&data).Error; err != nil {
