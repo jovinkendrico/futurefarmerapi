@@ -79,7 +79,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		}
 		result := DB.Create(&relayHistory)
 		if result.Error != nil {
-			panic("failed to insert relay status record")
+			panic("failed to insert relay history record")
 		}
 
 	}
@@ -91,24 +91,32 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		}
 		result := DB.Create(&relayHistory)
 		if result.Error != nil {
-			panic("failed to insert relay status record")
+			panic("failed to insert relay history record")
 		}
 	}
 	if tds < levelConfig.Tds {
 		relayStatus.Nut_a = 1
 		relayStatus.Nut_b = 1
 		relayHistory := models.RelayHistory{
-			Type:   "NUTRISI AB",
+			Type:   "NUTRISI A",
 			Status: "ON",
 		}
 		result := DB.Create(&relayHistory)
 		if result.Error != nil {
-			panic("failed to insert relay status record")
+			panic("failed to insert relay history record")
+		}
+		relayHistory_2 := models.RelayHistory{
+			Type:   "NUTRISI B",
+			Status: "ON",
+		}
+		result_2 := DB.Create(&relayHistory_2)
+		if result_2.Error != nil {
+			panic("failed to insert relay history record")
 		}
 
 	}
 
-	if temperature < levelConfig.Temperature || humidity < levelConfig.Humidity {
+	if temperature < levelConfig.Temperature_low || humidity < levelConfig.Humidity {
 		relayStatus.Fan = 1
 		relayHistory := models.RelayHistory{
 			Type:   "FAN",
@@ -116,7 +124,19 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		}
 		result := DB.Create(&relayHistory)
 		if result.Error != nil {
-			panic("failed to insert relay status record")
+			panic("failed to insert relay history record")
+		}
+	}
+
+	if temperature > levelConfig.Temperature_high {
+		relayStatus.Light = 1
+		relayHistory := models.RelayHistory{
+			Type:   "LIGHT",
+			Status: "ON",
+		}
+		result := DB.Create(&relayHistory)
+		if result.Error != nil {
+			panic("failed to insert relay history record")
 		}
 	}
 

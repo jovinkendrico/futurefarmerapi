@@ -12,10 +12,11 @@ type RelayConfig struct {
 }
 
 type LevelConfig struct {
-	Id          int64   `gorm:"primaryKey" json:"id"`
-	Ph_low      float64 `gorm:"type:decimal(18,2)" json:"ph_low"`
-	Ph_high     float64 `gorm:"type:decimal(18,2)" json:"ph_high"`
-	Tds         float64 `gorm:"type:decimal(18,2)" json:"tds"`
-	Temperature float64 `gorm:"type:decimal(18,2)" json:"temperature"`
-	Humidity    float64 `gorm:"type:decimal(18,2)" json:"humidity"`
+	Id               int64   `gorm:"primaryKey" json:"id"`
+	Ph_low           float64 `gorm:"type:decimal(18,2)" json:"ph_low"`
+	Ph_high          float64 `gorm:"type:decimal(18,2)" json:"ph_high"`
+	Tds              float64 `gorm:"type:decimal(18,2)" json:"tds"`
+	Temperature_low  float64 `gorm:"type:decimal(18,2)" json:"temperature_low"`
+	Temperature_high float64 `gorm:"type:decimal(18,2)" json:"temperature_high"`
+	Humidity         float64 `gorm:"type:decimal(18,2)" json:"humidity"`
 }
