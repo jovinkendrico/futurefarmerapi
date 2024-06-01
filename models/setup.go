@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 func ConnectDatabase() {
 	// Connect to MySQL server without specifying a database
-	dsn := "root:@tcp(localhost:3307)/?parseTime=true"
+	dsn := "root:@tcp(localhost:3306)/?parseTime=true"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to MySQL")
@@ -22,7 +22,7 @@ func ConnectDatabase() {
 	createDatabaseIfNotExists(db, "futurefarmerapi")
 
 	// Connect to the `futurefarmerapi` database
-	dsn = "root:@tcp(localhost:3307)/futurefarmerapi?parseTime=true"
+	dsn = "root:@tcp(localhost:3306)/futurefarmerapi?parseTime=true"
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to futurefarmerapi database")
@@ -59,12 +59,12 @@ func createDatabaseIfNotExists(db *gorm.DB, dbName string) {
 
 func createRelayStatus() {
 	relayStatus := RelayStatus{
-		Ph_up:    1,
-		Ph_down:  1,
-		Nut_a:    1,
-		Nut_b:    1,
-		Fan:      1,
-		Light:    1,
+		Ph_up:     1,
+		Ph_down:   1,
+		Nut_a:     1,
+		Nut_b:     1,
+		Fan:       1,
+		Light:     1,
 		CreatedAt: time.Now(),
 	}
 

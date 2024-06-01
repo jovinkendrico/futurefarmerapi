@@ -3,32 +3,15 @@ package sendcontroller
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 
-	"github.com/gorilla/mux"
 	"github.com/jovinkendrico/futurefarmerapi/helper"
 	"github.com/jovinkendrico/futurefarmerapi/models"
 )
 
 func GetRelayStatus(w http.ResponseWriter, r *http.Request) {
-	// Extract the ID from the URL parameters
-	vars := mux.Vars(r)
-	idStr, ok := vars["id"]
-	if !ok {
-		http.Error(w, "ID is missing", http.StatusBadRequest)
-		return
-	}
-
-	// Convert the ID to an integer
-	id, err := strconv.Atoi(idStr)
-	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
-		return
-	}
-
 	// Retrieve the RelayStatus record by ID
 	var relayStatus models.RelayStatus
-	if err := models.DB.First(&relayStatus, id).Error; err != nil {
+	if err := models.DB.First(&relayStatus, "1").Error; err != nil {
 		http.Error(w, "Record not found", http.StatusNotFound)
 		return
 	}
@@ -39,8 +22,6 @@ func GetRelayStatus(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
 		return
 	}
-
-
 
 	// Check the status of each field
 	statuses := map[string]string{
