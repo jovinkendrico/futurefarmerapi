@@ -87,7 +87,8 @@ func createLevelConfig() {
 		Ph_low:      5.5,
 		Ph_high:     6.5,
 		Tds:         100,
-		Temperature: 40,
+		Temperature_low: 33,
+		Temperature_high: 40,
 		Humidity:    70,
 	}
 
