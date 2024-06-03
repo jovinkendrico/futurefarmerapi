@@ -28,7 +28,7 @@ func ConnectDatabase() {
 	createDatabaseIfNotExists(db, "futurefarmerapi")
 
 	// Connect to the `futurefarmerapi` database
-	dsn = os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/?parseTime=true"
+	dsn = os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/futurefarmerapi?parseTime=true"
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to futurefarmerapi database")
