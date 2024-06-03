@@ -35,6 +35,7 @@ func UpdateConfig(w http.ResponseWriter, r *http.Request) {
 	if err := decoder.Decode(&relayConfigInput); err != nil {
 		response := map[string]string{"message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
 	}
 
 	defer r.Body.Close()
@@ -42,6 +43,7 @@ func UpdateConfig(w http.ResponseWriter, r *http.Request) {
 	if err := models.DB.Update("1", &relayConfigInput).Error; err != nil {
 		response := map[string]string{"message": err.Error()}
 		helper.ResponseJSON(w, http.StatusInternalServerError, response)
+		return
 	}
 	response := map[string]string{"message": "success"}
 	helper.ResponseJSON(w, http.StatusOK, response)
@@ -53,6 +55,7 @@ func UpdateRelayStatus(w http.ResponseWriter, r *http.Request) {
 	if err := decoder.Decode(&relayStatusInput); err != nil {
 		response := map[string]string{"message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
 	}
 
 	defer r.Body.Close()
@@ -60,6 +63,7 @@ func UpdateRelayStatus(w http.ResponseWriter, r *http.Request) {
 	if err := models.DB.Update("1", &relayStatusInput).Error; err != nil {
 		response := map[string]string{"message": err.Error()}
 		helper.ResponseJSON(w, http.StatusInternalServerError, response)
+		return
 	}
 	response := map[string]string{"message": "success"}
 	helper.ResponseJSON(w, http.StatusOK, response)
