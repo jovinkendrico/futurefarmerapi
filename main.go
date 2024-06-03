@@ -12,6 +12,7 @@ import (
 	"github.com/jovinkendrico/futurefarmerapi/controllers/configcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/dashboardcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/datacontroller"
+	"github.com/jovinkendrico/futurefarmerapi/controllers/plantcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/sendcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/models"
 )
@@ -38,6 +39,8 @@ func main() {
 	r.HandleFunc("/api/v1/dashboard", dashboardcontroller.Index).Methods("GET")
 	r.HandleFunc("/api/v1/updateconfig", configcontroller.UpdateConfig).Methods("PUT")
 	r.HandleFunc("/api/v1/updaterelay", configcontroller.UpdateRelayStatus).Methods("PUT")
+	r.HandleFunc("/api/v1/plant", plantcontroller.Index).Methods("GET")
+	r.HandleFunc("/api/v1/plant", plantcontroller.Insert).Methods("POST")
 
 	fmt.Printf("Server is running !!!")
 	log.Fatal(http.ListenAndServe(os.Getenv("PORT"), r))

@@ -28,24 +28,25 @@ func ConnectDatabase() {
 	createDatabaseIfNotExists(db, "futurefarmerapi")
 
 	// Connect to the `futurefarmerapi` database
-	dsn = os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/?parseTime=true"
+	dsn = os.Getenv("DB_USERNAME") + ":" + os.Getenv("DB_PASSWORD") + "@tcp(" + os.Getenv("DB_HOST") + ":" + os.Getenv("DB_PORT") + ")/futurefarmerapi?parseTime=true"
 	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect to futurefarmerapi database")
 	}
 
 	// Perform auto migrations
-	err = db.AutoMigrate(&User{}, &LevelConfig{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{})
+	err = db.AutoMigrate(&User{}, &LevelConfig{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{}, &Plant{})
 	if err != nil {
 		panic("failed to migrate database")
 	}
-	db.Migrator().DropTable(&User{}, &LevelConfig{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{})
+	db.Migrator().DropTable(&User{}, &LevelConfig{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{}, &Plant{})
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&SensorData{})
 	db.AutoMigrate(&RelayStatus{})
 	db.AutoMigrate(&RelayConfig{})
 	db.AutoMigrate(&RelayHistory{})
 	db.AutoMigrate(&LevelConfig{})
+	db.AutoMigrate(&Plant{})
 
 	// Assign the connected DB to the global variable
 	DB = db
