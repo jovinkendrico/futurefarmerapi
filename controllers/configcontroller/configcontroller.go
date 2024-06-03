@@ -7,7 +7,6 @@ import (
 
 	"github.com/jovinkendrico/futurefarmerapi/helper"
 	"github.com/jovinkendrico/futurefarmerapi/models"
-	"gorm.io/gorm"
 )
 
 func GetConfig(w http.ResponseWriter, r *http.Request) {
@@ -67,7 +66,6 @@ func UpdateRelayStatus(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateRelay(w http.ResponseWriter, r *http.Request) {
-	var DB *gorm.DB
 	var relayStatus models.RelayStatus
 	result := models.DB.First(&relayStatus)
 	if result.Error != nil {
@@ -80,134 +78,81 @@ func UpdateRelay(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	relay_1 := r.FormValue("Relay_1")
-	relay_1_int, err := strconv.ParseInt(relay_1, 36, 64)
+
+	relay_id := r.FormValue("relay_id")
+	relay_id_int, err := strconv.ParseInt(relay_id, 36, 64)
 	if err != nil {
-		http.Error(w, "Relay 1 Error", http.StatusBadRequest)
+		http.Error(w, "Relay Id Error", http.StatusBadRequest)
 		return
 	}
-	if relayStatus.Ph_up == 1 && relay_1_int == 0 {
+	status := r.FormValue("status")
+
+
+	if (relayStatus.Ph_up == 1 && relay_id_int == 1 && status=="off") {
 		relayHistory := models.RelayHistory{
 			Type:   "PH UP",
 			Status: "OFF",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
 			panic("failed to insert relay history record")
 		}
-	}
-	relayStatus.Ph_up = relay_1_int
-
-
-	if saveResult := models.DB.Save(&relayStatus); saveResult.Error != nil {
-		http.Error(w, saveResult.Error.Error(), http.StatusInternalServerError)
-	}
-
-	relay_2 := r.FormValue("Relay_2")
-	relay_2_int, err := strconv.ParseInt(relay_2, 36, 64)
-	if err != nil {
-		http.Error(w, "Relay 2 Error", http.StatusBadRequest)
-		return
-	}
-	if relayStatus.Ph_down == 1 && relay_2_int == 0 {
+		relayStatus.Ph_up = 0
+	} else if (relayStatus.Ph_down == 1 && relay_id_int == 2 && status=="off") {
 		relayHistory := models.RelayHistory{
 			Type:   "PH DOWN",
 			Status: "OFF",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
 			panic("failed to insert relay history record")
 		}
-	}
-	relayStatus.Ph_down = relay_2_int
-	if saveResult := models.DB.Save(&relayStatus); saveResult.Error != nil {
-		http.Error(w, saveResult.Error.Error(), http.StatusInternalServerError)
-	}
-
-	relay_3 := r.FormValue("Relay_3")
-	relay_3_int, err := strconv.ParseInt(relay_3, 36, 64)
-	if err != nil {
-		http.Error(w, "Relay 3 Error", http.StatusBadRequest)
-		return
-	}
-	if relayStatus.Nut_a == 1 && relay_3_int == 0 {
+		relayStatus.Ph_down = 0
+	} else if (relayStatus.Nut_a == 1 && relay_id_int == 3 && status=="off") {
 		relayHistory := models.RelayHistory{
 			Type:   "NUTRISI A",
 			Status: "OFF",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
 			panic("failed to insert relay history record")
 		}
-	}
-	relayStatus.Nut_a = relay_3_int
-	if saveResult := models.DB.Save(&relayStatus); saveResult.Error != nil {
-		http.Error(w, saveResult.Error.Error(), http.StatusInternalServerError)
-	}
-
-
-	relay_4 := r.FormValue("Relay_4")
-	relay_4_int, err := strconv.ParseInt(relay_4, 36, 64)
-	if err != nil {
-		http.Error(w, "Relay 4 Error", http.StatusBadRequest)
-		return
-	}
-	if relayStatus.Nut_b == 1 && relay_4_int == 0 {
+		relayStatus.Nut_a = 0
+	} else if (relayStatus.Nut_b == 1 && relay_id_int == 4 && status=="off") {
 		relayHistory := models.RelayHistory{
 			Type:   "NUTRISI B",
 			Status: "OFF",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
 			panic("failed to insert relay history record")
 		}
-	}
-	relayStatus.Nut_b = relay_4_int
-	if saveResult := models.DB.Save(&relayStatus); saveResult.Error != nil {
-		http.Error(w, saveResult.Error.Error(), http.StatusInternalServerError)
-	}
-
-
-	relay_5 := r.FormValue("Relay_5")
-	relay_5_int, err := strconv.ParseInt(relay_5, 36, 64)
-	if err != nil {
-		http.Error(w, "Relay 5 Error", http.StatusBadRequest)
-		return
-	}	
-	if relayStatus.Fan == 1 && relay_5_int == 0 {
+		relayStatus.Nut_b = 0
+	} else if (relayStatus.Fan == 1 && relay_id_int == 5 && status=="off") {
 		relayHistory := models.RelayHistory{
 			Type:   "FAN",
 			Status: "OFF",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
 			panic("failed to insert relay history record")
 		}
-	}
-	relayStatus.Fan = relay_5_int
-	if saveResult := models.DB.Save(&relayStatus); saveResult.Error != nil {
-		http.Error(w, saveResult.Error.Error(), http.StatusInternalServerError)
-	}
-
-	relay_6 := r.FormValue("Relay_6")
-	relay_6_int, err := strconv.ParseInt(relay_6, 36, 64)
-	if err != nil {
-		http.Error(w, "Relay 6 Error", http.StatusBadRequest)
-		return
-	}
-	if relayStatus.Light == 1 && relay_6_int == 0 {
+		relayStatus.Fan = 0
+	} else if (relayStatus.Fan == 1 && relay_id_int == 6 && status=="off") {
 		relayHistory := models.RelayHistory{
 			Type:   "LIGHT",
 			Status: "OFF",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
 			panic("failed to insert relay history record")
 		}
+		relayStatus.Light = 0
 	}
-	relayStatus.Light = relay_6_int
+
+
+
 	if saveResult := models.DB.Save(&relayStatus); saveResult.Error != nil {
 		http.Error(w, saveResult.Error.Error(), http.StatusInternalServerError)
 	}
-
 }
