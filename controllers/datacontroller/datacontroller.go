@@ -21,7 +21,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	phStr := r.FormValue("ph")
 	ph, err := strconv.ParseFloat(phStr, 64)
 	if err != nil {
-		http.Error(w, "Invalid temperature value", http.StatusBadRequest)
+		http.Error(w, "Invalid ph value", http.StatusBadRequest)
 		return
 	}
 
@@ -29,7 +29,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	tdsStr := r.FormValue("tds")
 	tds, err := strconv.ParseFloat(tdsStr, 64)
 	if err != nil {
-		http.Error(w, "Invalid temperature value", http.StatusBadRequest)
+		http.Error(w, "Invalid tds value", http.StatusBadRequest)
 		return
 	}
 
@@ -37,7 +37,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	temperatureStr := r.FormValue("temperature")
 	temperature, err := strconv.ParseFloat(temperatureStr, 64)
 	if err != nil {
-		http.Error(w, "Invalid temperature value", http.StatusBadRequest)
+		http.Error(w, "Invalid temp value", http.StatusBadRequest)
 		return
 	}
 
@@ -45,7 +45,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	humidityStr := r.FormValue("humidity")
 	humidity, err := strconv.ParseFloat(humidityStr, 64)
 	if err != nil {
-		http.Error(w, "Invalid humidity value", http.StatusBadRequest)
+		http.Error(w, "Invalid humid value", http.StatusBadRequest)
 		return
 	}
 
