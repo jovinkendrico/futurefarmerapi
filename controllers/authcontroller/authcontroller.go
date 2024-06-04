@@ -19,6 +19,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err := decoder.Decode(&userInput); err != nil {
 		response := map[string]string{"message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
 	}
 	defer r.Body.Close()
 
@@ -41,7 +42,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		helper.ResponseJSON(w, http.StatusUnauthorized, response)
 		return
 	}
-	expTime := time.Now().Add(time.Minute * 1)
+	expTime := time.Now().Add(time.Hour * 24 * 365 * 100)
 	claims := &config.JWTClaim{
 		Username: user.Username,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -73,6 +74,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if err := decoder.Decode(&userInput); err != nil {
 		response := map[string]string{"message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
 	}
 
 	defer r.Body.Close()
@@ -83,7 +85,9 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	if err := models.DB.Create(&userInput).Error; err != nil {
 		response := map[string]string{"message": err.Error()}
 		helper.ResponseJSON(w, http.StatusInternalServerError, response)
+		return
 	}
+
 	response := map[string]string{"message": "success"}
 	helper.ResponseJSON(w, http.StatusOK, response)
 }
