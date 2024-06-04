@@ -66,12 +66,12 @@ func createDatabaseIfNotExists(db *gorm.DB, dbName string) {
 
 func createRelayStatus() {
 	relayStatus := RelayStatus{
-		Ph_up:     1,
-		Ph_down:   1,
-		Nut_a:     1,
-		Nut_b:     1,
-		Fan:       1,
-		Light:     1,
+		Ph_up:     0,
+		Ph_down:   0,
+		Nut_a:     0,
+		Nut_b:     0,
+		Fan:       0,
+		Light:     0,
 		CreatedAt: time.Now(),
 	}
 
@@ -84,10 +84,10 @@ func createRelayStatus() {
 
 func createLevelConfig() {
 	levelConfig := LevelConfig{
-		Ph_low:      5.5,
-		Ph_high:     6.5,
-		Tds:         100,
-		Temperature: 40,
+		Ph_low:      6.5,
+		Ph_high:     7,
+		Tds:         600,
+		Temperature: 25,
 		Humidity:    70,
 	}
 
@@ -100,7 +100,7 @@ func createLevelConfig() {
 
 func createRelayConfig() {
 	relayConfig := RelayConfig{
-		Ph_up:   1,
+		Ph_up:   20,
 		Ph_down: 20,
 		Nut_A:   20,
 		Nut_B:   20,
