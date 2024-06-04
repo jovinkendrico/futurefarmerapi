@@ -15,17 +15,19 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	if err := models.DB.Last(&Plant).Error; err != nil {
 		switch err {
 		case gorm.ErrRecordNotFound:
-			response := map[string]string{"message": "Record not found"}
+			response := map[string]string{"error": "true", "message": "Record not found"}
 			helper.ResponseJSON(w, http.StatusUnauthorized, response)
 			return
 		default:
-			response := map[string]string{"message": err.Error()}
+			response := map[string]string{"error": "true", "message": err.Error()}
 			helper.ResponseJSON(w, http.StatusInternalServerError, response)
 			return
 		}
 
 	}
 	data := map[string]interface{}{
+		"error":      "false",
+		"message":    "Record found",
 		"id":         Plant.Id,
 		"nama":       Plant.Nama,
 		"tanggal":    Plant.Tanggal,
@@ -45,14 +47,15 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 	}
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&PlantInput); err != nil {
-		response := map[string]string{"message": err.Error()}
+		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
 
 	tanggal, err := time.Parse("2006-01-02", PlantInput.Tanggal)
 	if err != nil {
-		http.Error(w, "Invalid tanggal format", http.StatusBadRequest)
+		response := map[string]string{"error": "true", "message": "Invalid date format"}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
 	plant := models.Plant{
@@ -65,10 +68,10 @@ func Insert(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	if err := models.DB.Create(&plant).Error; err != nil {
-		response := map[string]string{"message": err.Error()}
+		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusInternalServerError, response)
 		return
 	}
-	response := map[string]string{"message": "success"}
+	response := map[string]string{"error": "false", "message": "success"}
 	helper.ResponseJSON(w, http.StatusOK, response)
 }

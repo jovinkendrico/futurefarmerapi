@@ -13,17 +13,19 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	if err := models.DB.Last(&SensorData).Error; err != nil {
 		switch err {
 		case gorm.ErrRecordNotFound:
-			response := map[string]string{"message": "Record not found"}
+			response := map[string]string{"error": "true", "message": "Record not found"}
 			helper.ResponseJSON(w, http.StatusUnauthorized, response)
 			return
 		default:
-			response := map[string]string{"message": err.Error()}
+			response := map[string]string{"error": "true", "message": err.Error()}
 			helper.ResponseJSON(w, http.StatusInternalServerError, response)
 			return
 		}
 
 	}
 	data := map[string]interface{}{
+		"error":      "false",
+		"message":    "Record found",
 		"id":         SensorData.Id,
 		"ph":         SensorData.Ph,
 		"tds":        SensorData.Tds,
