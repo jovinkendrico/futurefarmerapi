@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/jovinkendrico/futurefarmerapi/config"
 	"github.com/jovinkendrico/futurefarmerapi/helper"
 	"github.com/jovinkendrico/futurefarmerapi/models"
@@ -61,7 +61,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Path:  "/",
 		Value: token,
 	})
-	response := map[string]string{"message": "login berhasil"}
+	response := map[string]string{"message": "login berhasil", "token": token}
 	helper.ResponseJSON(w, http.StatusOK, response)
 
 }
