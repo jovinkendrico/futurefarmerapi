@@ -34,14 +34,28 @@ func main() {
 	r.HandleFunc("/relaystatus", sendcontroller.GetRelayStatus).Methods("GET")
 	r.HandleFunc("/login", authcontroller.Login).Methods("POST")
 	r.HandleFunc("/register", authcontroller.Register).Methods("POST")
+
 	//ANDROID API
 	api := r.PathPrefix("/api").Subrouter()
 	api.HandleFunc("/v1/logout", authcontroller.Logout).Methods("GET")
 	api.HandleFunc("/v1/dashboard", dashboardcontroller.Index).Methods("GET")
-	api.HandleFunc("/v1/updateconfig", configcontroller.UpdateConfig).Methods("PUT")
+
+	//Relay config
+	api.HandleFunc("/v1/getrelayconfig", configcontroller.GetRelayConfig).Methods("GET")
+	api.HandleFunc("/v1/updaterelayconfig", configcontroller.UpdateRelayConfig).Methods("PUT")
+
+	//Level Config
+	api.HandleFunc("/v1/getlevelconfig", configcontroller.GetLevelConfig).Methods("GET")
+	api.HandleFunc("/v1/updatelevelconfig", configcontroller.UpdateLevelConfig).Methods("PUT")
+
+	//relay status on off manual auto
 	api.HandleFunc("/v1/updaterelay", configcontroller.UpdateRelayStatus).Methods("PUT")
+
+	//tanaman
 	api.HandleFunc("/v1/plant", plantcontroller.Index).Methods("GET")
 	api.HandleFunc("/v1/plant", plantcontroller.Insert).Methods("POST")
+	//use middleware jwt for android
+
 	api.Use(middlewares.JWTMiddleware)
 	fmt.Printf("Server is running !!!")
 	log.Fatal(http.ListenAndServe(os.Getenv("PORT"), r))
