@@ -17,7 +17,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	var userInput models.User
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&userInput); err != nil {
-		response := map[string]string{"message": err.Error()}
+		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
@@ -27,18 +27,18 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	if err := models.DB.Where("username = ?", userInput.Username).First(&user).Error; err != nil {
 		switch err {
 		case gorm.ErrRecordNotFound:
-			response := map[string]string{"message": "username atau password salah"}
+			response := map[string]string{"error": "true", "message": "username atau password salah"}
 			helper.ResponseJSON(w, http.StatusUnauthorized, response)
 			return
 		default:
-			response := map[string]string{"message": err.Error()}
+			response := map[string]string{"error": "true", "message": err.Error()}
 			helper.ResponseJSON(w, http.StatusInternalServerError, response)
 			return
 		}
 
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userInput.Password)); err != nil {
-		response := map[string]string{"message": "username atau password salah"}
+		response := map[string]string{"error": "true", "message": "username atau password salah"}
 		helper.ResponseJSON(w, http.StatusUnauthorized, response)
 		return
 	}
@@ -53,7 +53,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	tokenAlgo := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	token, err := tokenAlgo.SignedString(config.JWT_KEY)
 	if err != nil {
-		response := map[string]string{"message": err.Error()}
+		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusInternalServerError, response)
 		return
 	}
@@ -62,7 +62,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		Path:  "/",
 		Value: token,
 	})
-	response := map[string]string{"message": "login berhasil", "token": token}
+	response := map[string]string{"error": "false", "message": "login berhasil", "token": token}
 	helper.ResponseJSON(w, http.StatusOK, response)
 
 }
@@ -72,7 +72,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	var userInput models.User
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&userInput); err != nil {
-		response := map[string]string{"message": err.Error()}
+		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
@@ -83,12 +83,12 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	userInput.Password = string(hashPassword)
 
 	if err := models.DB.Create(&userInput).Error; err != nil {
-		response := map[string]string{"message": err.Error()}
+		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusInternalServerError, response)
 		return
 	}
 
-	response := map[string]string{"message": "success"}
+	response := map[string]string{"error": "false", "message": "success"}
 	helper.ResponseJSON(w, http.StatusOK, response)
 }
 
@@ -100,6 +100,6 @@ func Logout(w http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 		MaxAge:   -1,
 	})
-	response := map[string]string{"message": "logout berhasil"}
+	response := map[string]string{"error": "false", "message": "logout berhasil"}
 	helper.ResponseJSON(w, http.StatusOK, response)
 }

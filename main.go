@@ -34,6 +34,8 @@ func main() {
 	iotAPI.HandleFunc("/getconfig", configcontroller.GetConfig).Methods("GET")
 	iotAPI.HandleFunc("/updaterelay", configcontroller.UpdateRelay).Methods("POST")
 	iotAPI.HandleFunc("/relaystatus", sendcontroller.GetRelayStatus).Methods("GET")
+
+	//login logic
 	r.HandleFunc("/login", authcontroller.Login).Methods("POST")
 	r.HandleFunc("/register", authcontroller.Register).Methods("POST")
 
