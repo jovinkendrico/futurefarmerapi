@@ -49,7 +49,19 @@ func main() {
 	api.HandleFunc("/v1/updatelevelconfig", configcontroller.UpdateLevelConfig).Methods("PUT")
 
 	//relay status on off manual auto
-	api.HandleFunc("/v1/updaterelay", configcontroller.UpdateRelayStatus).Methods("PUT")
+	api.HandleFunc("/v1/getrelaystatus", configcontroller.GetRelayStatus).Methods("GET")
+	api.HandleFunc("/v1/updaterelayphup", configcontroller.UpdateRelayPhUp).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelayphdown", configcontroller.UpdateRelayPhDown).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaynuta", configcontroller.UpdateRelayNutA).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaynutb", configcontroller.UpdateRelayNutB).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelayfan", configcontroller.UpdateRelayFan).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaylight", configcontroller.UpdateRelayLight).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaymanualone", configcontroller.UpdateRelayManualOne).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaymanualtwo", configcontroller.UpdateRelayManualTwo).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaymanualthree", configcontroller.UpdateRelayManualThree).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaymanualfour", configcontroller.UpdateRelayManualFour).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaymanualfive", configcontroller.UpdateRelayManualFive).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaymanualsix", configcontroller.UpdateRelayManualSix).Methods("PATCH")
 
 	//tanaman
 	api.HandleFunc("/v1/plant", plantcontroller.Index).Methods("GET")
