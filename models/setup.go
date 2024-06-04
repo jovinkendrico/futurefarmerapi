@@ -84,11 +84,12 @@ func createRelayStatus() {
 
 func createLevelConfig() {
 	levelConfig := LevelConfig{
-		Ph_low:      6.5,
-		Ph_high:     7,
-		Tds:         600,
-		Temperature: 25,
-		Humidity:    70,
+		Ph_low:           6.5,
+		Ph_high:          7.0,
+		Tds:              100,
+		Temperature_low:  33,
+		Temperature_high: 40,
+		Humidity:         70,
 	}
 
 	// Insert the new record into the database

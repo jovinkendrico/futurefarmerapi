@@ -6,7 +6,6 @@ import (
 
 	"github.com/jovinkendrico/futurefarmerapi/helper"
 	"github.com/jovinkendrico/futurefarmerapi/models"
-	"gorm.io/gorm"
 )
 
 func InsertData(w http.ResponseWriter, r *http.Request) {
@@ -70,53 +69,72 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var DB *gorm.DB
+
 	if ph < levelConfig.Ph_low {
 		relayStatus.Ph_up = 1
-		relayHistory := models.RelayHistory{
-			Type:   "PH UP",
-			Status: "ON",
+		var relayHistory models.RelayHistory
+		relayHistory.Type = "PH UP"
+		relayHistory.Status = "on"
+		err := models.DB.Create(&relayHistory).Error
+		if  err != nil {
+			panic("failed to insert relay history record")
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
-			panic("failed to insert relay status record")
-		}
-
 	}
+
 	if ph > levelConfig.Ph_high {
 		relayStatus.Ph_down = 1
 		relayHistory := models.RelayHistory{
 			Type:   "PH DOWN",
 			Status: "ON",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
-			panic("failed to insert relay status record")
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
+			panic("failed to insert relay history record")
 		}
 	}
 	if tds < levelConfig.Tds {
 		relayStatus.Nut_a = 1
 		relayStatus.Nut_b = 1
 		relayHistory := models.RelayHistory{
-			Type:   "NUTRISI AB",
+			Type:   "NUTRISI A",
 			Status: "ON",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
-			panic("failed to insert relay status record")
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
+			panic("failed to insert relay history record")
+		}
+		relayHistory_2 := models.RelayHistory{
+			Type:   "NUTRISI B",
+			Status: "ON",
+		}
+		result_2 := models.DB.Create(&relayHistory_2).Error
+		if result_2 != nil {
+			panic("failed to insert relay history record")
 		}
 
 	}
 
-	if temperature < levelConfig.Temperature || humidity < levelConfig.Humidity {
+	if temperature < levelConfig.Temperature_low || humidity < levelConfig.Humidity {
 		relayStatus.Fan = 1
 		relayHistory := models.RelayHistory{
 			Type:   "FAN",
 			Status: "ON",
 		}
-		result := DB.Create(&relayHistory)
-		if result.Error != nil {
-			panic("failed to insert relay status record")
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
+			panic("failed to insert relay history record")
+		}
+	}
+
+	if temperature > levelConfig.Temperature_high {
+		relayStatus.Light = 1
+		relayHistory := models.RelayHistory{
+			Type:   "LIGHT",
+			Status: "ON",
+		}
+		result := models.DB.Create(&relayHistory).Error
+		if result != nil {
+			panic("failed to insert relay history record")
 		}
 	}
 

@@ -14,6 +14,7 @@ import (
 	"github.com/jovinkendrico/futurefarmerapi/controllers/datacontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/plantcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/controllers/sendcontroller"
+	"github.com/jovinkendrico/futurefarmerapi/middlewares"
 	"github.com/jovinkendrico/futurefarmerapi/models"
 )
 
@@ -31,17 +32,17 @@ func main() {
 	r.HandleFunc("/getconfig", configcontroller.GetConfig).Methods("GET")
 	r.HandleFunc("/updaterelay", configcontroller.UpdateRelay).Methods("POST")
 	r.HandleFunc("/relaystatus", sendcontroller.GetRelayStatus).Methods("GET")
-
+	r.HandleFunc("/login", authcontroller.Login).Methods("POST")
+	r.HandleFunc("/register", authcontroller.Register).Methods("POST")
 	//ANDROID API
-	r.HandleFunc("/api/v1/login", authcontroller.Login).Methods("POST")
-	r.HandleFunc("/api/v1/register", authcontroller.Register).Methods("POST")
-	r.HandleFunc("/api/v1/logout", authcontroller.Logout).Methods("GET")
-	r.HandleFunc("/api/v1/dashboard", dashboardcontroller.Index).Methods("GET")
-	r.HandleFunc("/api/v1/updateconfig", configcontroller.UpdateConfig).Methods("PUT")
-	r.HandleFunc("/api/v1/updaterelay", configcontroller.UpdateRelayStatus).Methods("PUT")
-	r.HandleFunc("/api/v1/plant", plantcontroller.Index).Methods("GET")
-	r.HandleFunc("/api/v1/plant", plantcontroller.Insert).Methods("POST")
-
+	api := r.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/v1/logout", authcontroller.Logout).Methods("GET")
+	api.HandleFunc("/v1/dashboard", dashboardcontroller.Index).Methods("GET")
+	api.HandleFunc("/v1/updateconfig", configcontroller.UpdateConfig).Methods("PUT")
+	api.HandleFunc("/v1/updaterelay", configcontroller.UpdateRelayStatus).Methods("PUT")
+	api.HandleFunc("/v1/plant", plantcontroller.Index).Methods("GET")
+	api.HandleFunc("/v1/plant", plantcontroller.Insert).Methods("POST")
+	api.Use(middlewares.JWTMiddleware)
 	fmt.Printf("Server is running !!!")
 	log.Fatal(http.ListenAndServe(os.Getenv("PORT"), r))
 }
