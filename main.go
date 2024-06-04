@@ -27,11 +27,13 @@ func main() {
 	models.ConnectDatabase()
 	r := mux.NewRouter()
 
-	//IOT API
-	r.HandleFunc("/insertdata", datacontroller.InsertData).Methods("POST")
-	r.HandleFunc("/getconfig", configcontroller.GetConfig).Methods("GET")
-	r.HandleFunc("/updaterelay", configcontroller.UpdateRelay).Methods("POST")
-	r.HandleFunc("/relaystatus", sendcontroller.GetRelayStatus).Methods("GET")
+	iotAPI := r.PathPrefix("/iot").Subrouter()
+	iotAPI.Use(middlewares.APIKEYMiddleware)
+
+	iotAPI.HandleFunc("/insertdata", datacontroller.InsertData).Methods("POST")
+	iotAPI.HandleFunc("/getconfig", configcontroller.GetConfig).Methods("GET")
+	iotAPI.HandleFunc("/updaterelay", configcontroller.UpdateRelay).Methods("POST")
+	iotAPI.HandleFunc("/relaystatus", sendcontroller.GetRelayStatus).Methods("GET")
 	r.HandleFunc("/login", authcontroller.Login).Methods("POST")
 	r.HandleFunc("/register", authcontroller.Register).Methods("POST")
 
