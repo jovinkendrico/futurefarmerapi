@@ -136,7 +136,6 @@ func UpdateLevelConfig(w http.ResponseWriter, r *http.Request) {
 		Tds              float64 `json:"tds"`
 		Temperature_high float64 `json:"temp_high"`
 		Temperature_low  float64 `json:"temp_low"`
-		Humidity         float64 `json:"humidity"`
 	}
 	decoder := json.NewDecoder(r.Body)
 	if err := decoder.Decode(&LevelInput); err != nil {
@@ -157,7 +156,6 @@ func UpdateLevelConfig(w http.ResponseWriter, r *http.Request) {
 	LevelConfig.Tds = LevelInput.Tds
 	LevelConfig.Temperature_high = LevelInput.Temperature_high
 	LevelConfig.Temperature_low = LevelInput.Temperature_low
-	LevelConfig.Humidity = LevelInput.Humidity
 
 	if err := models.DB.Save(&LevelConfig).Error; err != nil {
 		response := map[string]string{"error": "true", "message": err.Error()}

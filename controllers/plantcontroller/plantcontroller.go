@@ -25,13 +25,21 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+	currentDate := time.Now()
+	tanggalDb := Plant.Tanggal
+	umurCalculated := currentDate.Sub(tanggalDb).Hours() / 24 // Umur in days
+
+	// Calculate the Panen
+	panen := Plant.Umur - umurCalculated
+
 	data := map[string]interface{}{
 		"error":      "false",
 		"message":    "Record found",
 		"id":         Plant.Id,
 		"nama":       Plant.Nama,
 		"tanggal":    Plant.Tanggal,
-		"umur":       Plant.Umur,
+		"umur":       umurCalculated,
+		"panen": panen,
 		"created_at": Plant.CreatedAt,
 		"updated_at": Plant.UpdatedAt,
 	}
