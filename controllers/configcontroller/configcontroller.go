@@ -60,22 +60,44 @@ func GetRelayConfig(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateRelayConfig(w http.ResponseWriter, r *http.Request) {
-	var relayConfigInput models.RelayConfig
+	var RelayInput struct {
+		Ph_up   float64 `json:"ph_up"`
+		Ph_down float64 `json:"ph_down"`
+		Nut_A   float64 `json:"nut_a"`
+		Nut_B   float64 `json:"nut_b"`
+		Fan     float64 `json:"fan"`
+		Light   float64 `json:"light"`
+	}
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&relayConfigInput); err != nil {
+	if err := decoder.Decode(&RelayInput); err != nil {
 		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
 
 	defer r.Body.Close()
-
-	if err := models.DB.Update("1", &relayConfigInput).Error; err != nil {
+	var RelayConfig models.RelayConfig
+	if err := models.DB.First(&RelayConfig).Error; err != nil {
 		response := map[string]string{"error": "true", "message": err.Error()}
-		helper.ResponseJSON(w, http.StatusInternalServerError, response)
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
-	response := map[string]string{"error": "false", "message": "success"}
+	RelayConfig.Ph_up = RelayInput.Ph_up
+	RelayConfig.Ph_down = RelayInput.Ph_down
+	RelayConfig.Nut_A = RelayInput.Nut_A
+	RelayConfig.Nut_B = RelayInput.Nut_B
+	RelayConfig.Fan = RelayInput.Fan
+	RelayConfig.Light = RelayInput.Light
+	RelayConfig.IsSync = 0
+
+	if err := models.DB.Save(&RelayConfig).Error; err != nil {
+		response := map[string]string{"error": "true", "message": err.Error()}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+
+	// Respond with success message
+	response := map[string]string{"error": "false", "message": "Relay Config updated successfully"}
 	helper.ResponseJSON(w, http.StatusOK, response)
 }
 
@@ -108,23 +130,45 @@ func GetLevelConfig(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateLevelConfig(w http.ResponseWriter, r *http.Request) {
-	var LevelConfigInput models.LevelConfig
+	var LevelInput struct {
+		Ph_high          float64 `json:"ph_high"`
+		Ph_low           float64 `json:"ph_low"`
+		Tds              float64 `json:"tds"`
+		Temperature_high float64 `json:"temp_high"`
+		Temperature_low  float64 `json:"temp_low"`
+		Humidity         float64 `json:"humidity"`
+	}
 	decoder := json.NewDecoder(r.Body)
-	if err := decoder.Decode(&LevelConfigInput); err != nil {
+	if err := decoder.Decode(&LevelInput); err != nil {
 		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
 
 	defer r.Body.Close()
-
-	if err := models.DB.Update("1", &LevelConfigInput).Error; err != nil {
+	var LevelConfig models.LevelConfig
+	if err := models.DB.First(&LevelConfig).Error; err != nil {
 		response := map[string]string{"error": "true", "message": err.Error()}
-		helper.ResponseJSON(w, http.StatusInternalServerError, response)
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
 		return
 	}
-	response := map[string]string{"error": "false", "message": "success"}
+	LevelConfig.Ph_high = LevelInput.Ph_high
+	LevelConfig.Ph_low = LevelInput.Ph_low
+	LevelConfig.Tds = LevelInput.Tds
+	LevelConfig.Temperature_high = LevelInput.Temperature_high
+	LevelConfig.Temperature_low = LevelInput.Temperature_low
+	LevelConfig.Humidity = LevelInput.Humidity
+
+	if err := models.DB.Save(&LevelConfig).Error; err != nil {
+		response := map[string]string{"error": "true", "message": err.Error()}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+
+	// Respond with success message
+	response := map[string]string{"error": "false", "message": "Level Config updated successfully"}
 	helper.ResponseJSON(w, http.StatusOK, response)
+
 }
 func GetRelayStatus(w http.ResponseWriter, r *http.Request) {
 	var RelayStatus models.RelayStatus
