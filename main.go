@@ -58,6 +58,7 @@ func main() {
 	api.HandleFunc("/v1/updaterelayphdown", configcontroller.UpdateRelayPhDown).Methods("PATCH")
 	api.HandleFunc("/v1/updaterelaynuta", configcontroller.UpdateRelayNutA).Methods("PATCH")
 	api.HandleFunc("/v1/updaterelaynutb", configcontroller.UpdateRelayNutB).Methods("PATCH")
+	api.HandleFunc("/v1/updaterelaynutrisi", configcontroller.UpdateRelayNutrisi).Methods("PATCH")
 	api.HandleFunc("/v1/updaterelayfan", configcontroller.UpdateRelayFan).Methods("PATCH")
 	api.HandleFunc("/v1/updaterelaylight", configcontroller.UpdateRelayLight).Methods("PATCH")
 	api.HandleFunc("/v1/updaterelaymanualone", configcontroller.UpdateRelayManualOne).Methods("PATCH")

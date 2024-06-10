@@ -411,6 +411,42 @@ func UpdateRelayLight(w http.ResponseWriter, r *http.Request) {
 	response := map[string]string{"error": "false", "message": "Light updated successfully"}
 	helper.ResponseJSON(w, http.StatusOK, response)
 }
+func UpdateRelayNutrisi(w http.ResponseWriter, r *http.Request) {
+	var RelayInput struct {
+		Nutrisi int64 `json:"nutrisi"`
+	}
+	decoder := json.NewDecoder(r.Body)
+	if err := decoder.Decode(&RelayInput); err != nil {
+		response := map[string]string{"error": "true", "message": err.Error()}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+	defer r.Body.Close()
+
+	if RelayInput.Nutrisi != 0 && RelayInput.Nutrisi != 1 {
+		response := map[string]string{"error": "true", "message": "Light value must be 0 or 1"}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+
+	var RelayStatus models.RelayStatus
+	if err := models.DB.First(&RelayStatus).Error; err != nil {
+		response := map[string]string{"error": "true", "message": err.Error()}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+	RelayStatus.Nut_A = RelayInput.Nutrisi
+	RelayStatus.Nut_B = RelayInput.Nutrisi
+	if err := models.DB.Save(&RelayStatus).Error; err != nil {
+		response := map[string]string{"error": "true", "message": err.Error()}
+		helper.ResponseJSON(w, http.StatusBadRequest, response)
+		return
+	}
+
+	// Respond with success message
+	response := map[string]string{"error": "false", "message": "Nutrisi updated successfully"}
+	helper.ResponseJSON(w, http.StatusOK, response)
+}
 func UpdateRelayManualOne(w http.ResponseWriter, r *http.Request) {
 	var RelayInput struct {
 		Manual_One int64 `json:"manual_one"`
