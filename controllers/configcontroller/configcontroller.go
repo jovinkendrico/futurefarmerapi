@@ -542,6 +542,7 @@ func UpdateRelayManualThree(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	RelayStatus.Is_manual_3 = RelayInput.Manual_Three
+	RelayStatus.Is_manual_4 = RelayInput.Manual_Three
 	if err := models.DB.Save(&RelayStatus).Error; err != nil {
 		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
