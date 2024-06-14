@@ -69,14 +69,13 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	if ph < levelConfig.Ph_low {
 		relayStatus.Ph_up = 1
 		var relayHistory models.RelayHistory
 		relayHistory.Type = "PH UP"
 		relayHistory.Status = "on"
 		err := models.DB.Create(&relayHistory).Error
-		if  err != nil {
+		if err != nil {
 			panic("failed to insert relay history record")
 		}
 	}
@@ -151,4 +150,24 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	// Respond with the inserted data
 	helper.ResponseJSON(w, http.StatusOK, data)
 
+}
+func GetRelayHistory(w http.ResponseWriter, r *http.Request) {
+	// Define pagination parameters
+	page := 1   // Default page
+	limit := 25 // Default limit
+	if r.URL.Query().Get("page") != "" {
+		page, _ = strconv.Atoi(r.URL.Query().Get("page"))
+	}
+	offset := (page - 1) * limit
+
+	// Retrieve relay history records with pagination
+	var relayHistory []models.RelayHistory
+	result := models.DB.Order("created_at desc").Limit(limit).Offset(offset).Find(&relayHistory)
+	if result.Error != nil {
+		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Respond with relay history data
+	helper.ResponseJSON(w, http.StatusOK, relayHistory)
 }

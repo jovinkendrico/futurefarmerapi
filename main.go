@@ -71,6 +71,9 @@ func main() {
 	//tanaman
 	api.HandleFunc("/v1/plant", plantcontroller.Index).Methods("GET")
 	api.HandleFunc("/v1/plant", plantcontroller.Insert).Methods("POST")
+
+	//get relay history
+	api.HandleFunc("/v1/getrelayhistory", datacontroller.GetRelayHistory).Methods("GET")
 	//use middleware jwt for android
 
 	api.Use(middlewares.JWTMiddleware)
