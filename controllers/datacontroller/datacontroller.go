@@ -153,21 +153,39 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 }
 func GetRelayHistory(w http.ResponseWriter, r *http.Request) {
 	// Define pagination parameters
-	page := 1   // Default page
-	limit := 25 // Default limit
-	if r.URL.Query().Get("page") != "" {
-		page, _ = strconv.Atoi(r.URL.Query().Get("page"))
+	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+	pageSize, _ := strconv.Atoi(r.URL.Query().Get("page_size"))
+	if page < 1 {
+		page = 1
 	}
-	offset := (page - 1) * limit
+	if pageSize < 1 {
+		pageSize = 20
+	}
+	offset := (page - 1) * pageSize
 
 	// Retrieve relay history records with pagination
+	var totalRecordCount int64
 	var relayHistory []models.RelayHistory
-	result := models.DB.Order("created_at desc").Limit(limit).Offset(offset).Find(&relayHistory)
+	models.DB.Model(&models.RelayHistory{}).Count(&totalRecordCount)
+	result := models.DB.Order("created_at desc").Limit(pageSize).Offset(offset).Find(&relayHistory)
 	if result.Error != nil {
 		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Respond with relay history data
-	helper.ResponseJSON(w, http.StatusOK, relayHistory)
+	// Prepare the response data
+	responseData := struct {
+		PageNumber        int64                 `json:"page_number"`
+		PageSize          int64                 `json:"page_size"`
+		TotalRecordCount  int64                 `json:"total_record_count"`
+		RelayHistoryItems []models.RelayHistory `json:"records"`
+	}{
+		PageNumber:        int64(page),
+		PageSize:          int64(pageSize),
+		TotalRecordCount:  totalRecordCount,
+		RelayHistoryItems: relayHistory,
+	}
+
+	// Respond with the relay history data
+	helper.ResponseJSON(w, http.StatusOK, responseData)
 }
