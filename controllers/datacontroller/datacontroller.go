@@ -151,7 +151,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	helper.ResponseJSON(w, http.StatusOK, data)
 
 }
-func getRelayHistory(w http.ResponseWriter, r *http.Request) {
+func GetRelayHistory(w http.ResponseWriter, r *http.Request) {
 	// Define pagination parameters
 	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
 	pageSize, _ := strconv.Atoi(r.URL.Query().Get("page_size"))
