@@ -52,11 +52,29 @@ func ConnectDatabase() {
 	DB = db
 
 	// Create initial data if necessary
-	createRelayStatus()
-	createRelayConfig()
-	createLevelConfig()
+	initializeDatabaseData()
 }
+func initializeDatabaseData() {
+	var count int64
 
+	// Check if RelayStatus table is empty
+	DB.Model(&RelayStatus{}).Count(&count)
+	if count == 0 {
+		createRelayStatus()
+	}
+
+	// Check if LevelConfig table is empty
+	DB.Model(&LevelConfig{}).Count(&count)
+	if count == 0 {
+		createLevelConfig()
+	}
+
+	// Check if RelayConfig table is empty
+	DB.Model(&RelayConfig{}).Count(&count)
+	if count == 0 {
+		createRelayConfig()
+	}
+}
 func createDatabaseIfNotExists(db *gorm.DB, dbName string) {
 	sql := fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", dbName)
 	if err := db.Exec(sql).Error; err != nil {
