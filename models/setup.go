@@ -39,14 +39,14 @@ func ConnectDatabase() {
 	if err != nil {
 		panic("failed to migrate database")
 	}
-	// db.Migrator().DropTable(&User{}, &LevelConfig{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{}, &Plant{})
-	// db.AutoMigrate(&User{})
-	// db.AutoMigrate(&SensorData{})
-	// db.AutoMigrate(&RelayStatus{})
-	// db.AutoMigrate(&RelayConfig{})
-	// db.AutoMigrate(&RelayHistory{})
-	// db.AutoMigrate(&LevelConfig{})
-	// db.AutoMigrate(&Plant{})
+	db.Migrator().DropTable(&User{}, &LevelConfig{}, &SensorData{}, &RelayStatus{}, &RelayConfig{}, &RelayHistory{}, &Plant{})
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&SensorData{})
+	db.AutoMigrate(&RelayStatus{})
+	db.AutoMigrate(&RelayConfig{})
+	db.AutoMigrate(&RelayHistory{})
+	db.AutoMigrate(&LevelConfig{})
+	db.AutoMigrate(&Plant{})
 
 	// Assign the connected DB to the global variable
 	DB = db
