@@ -70,7 +70,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	}
 
 
-	if ph < levelConfig.Ph_low {
+	if ph < levelConfig.Ph_low && relayStatus.Is_manual_1 == 0 {
 		relayStatus.Ph_up = 1
 		var relayHistory models.RelayHistory
 		relayHistory.Type = "PH UP"
@@ -81,7 +81,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if ph > levelConfig.Ph_high {
+	if ph > levelConfig.Ph_high && relayStatus.Is_manual_2 == 0  {
 		relayStatus.Ph_down = 1
 		relayHistory := models.RelayHistory{
 			Type:   "PH DOWN",
@@ -93,28 +93,32 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if tds < levelConfig.Tds {
-		relayStatus.Nut_a = 1
-		relayStatus.Nut_b = 1
-		relayHistory := models.RelayHistory{
-			Type:   "NUTRISI A",
-			Status: "ON",
+		if relayStatus.Is_manual_3 == 0 {
+			relayStatus.Nut_a = 1
+			
+			relayHistory := models.RelayHistory{
+				Type:   "NUTRISI A",
+				Status: "ON",
+			}
+			result := models.DB.Create(&relayHistory).Error
+			if result != nil {
+				panic("failed to insert relay history record")
+			}
 		}
-		result := models.DB.Create(&relayHistory).Error
-		if result != nil {
-			panic("failed to insert relay history record")
+		if relayStatus.Is_manual_4 == 0 {
+			relayStatus.Nut_b = 1
+			relayHistory_2 := models.RelayHistory{
+				Type:   "NUTRISI B",
+				Status: "ON",
+			}
+			result_2 := models.DB.Create(&relayHistory_2).Error
+			if result_2 != nil {
+				panic("failed to insert relay history record")
+			}
 		}
-		relayHistory_2 := models.RelayHistory{
-			Type:   "NUTRISI B",
-			Status: "ON",
-		}
-		result_2 := models.DB.Create(&relayHistory_2).Error
-		if result_2 != nil {
-			panic("failed to insert relay history record")
-		}
-
 	}
 
-	if temperature < levelConfig.Temperature_low || humidity < levelConfig.Humidity {
+	if (temperature < levelConfig.Temperature_low || humidity < levelConfig.Humidity)  &&  relayStatus.Is_manual_5 == 0 {
 		relayStatus.Fan = 1
 		relayHistory := models.RelayHistory{
 			Type:   "FAN",
@@ -126,7 +130,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if temperature > levelConfig.Temperature_high {
+	if temperature > levelConfig.Temperature_high  && relayStatus.Is_manual_6 == 0  {
 		relayStatus.Light = 1
 		relayHistory := models.RelayHistory{
 			Type:   "LIGHT",
