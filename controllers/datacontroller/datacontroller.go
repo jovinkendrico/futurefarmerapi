@@ -172,7 +172,6 @@ func GetRelayHistory(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	// Prepare the response data
 	responseData := struct {
 		PageNumber       int64                 `json:"page_number"`

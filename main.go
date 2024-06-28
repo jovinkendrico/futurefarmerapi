@@ -16,6 +16,7 @@ import (
 	"github.com/jovinkendrico/futurefarmerapi/controllers/sendcontroller"
 	"github.com/jovinkendrico/futurefarmerapi/middlewares"
 	"github.com/jovinkendrico/futurefarmerapi/models"
+	"github.com/robfig/cron/v3"
 )
 
 func main() {
@@ -26,6 +27,43 @@ func main() {
 	}
 	models.ConnectDatabase()
 	r := mux.NewRouter()
+
+	c := cron.New()
+
+	_, err = c.AddFunc("CRON_TZ=Asia/Jakarta 0 6 * * *", func() {
+		// Implement your logic here to update database to 'on'
+		var RelayStatus models.RelayStatus
+		if err := models.DB.First(&RelayStatus).Error; err != nil {
+			return
+		}
+		RelayStatus.Fan = 1
+		if err := models.DB.Save(&RelayStatus).Error; err != nil {
+			return
+		}
+		fmt.Println("Turning database 'on' at 6 AM WIB")
+	})
+	if err != nil {
+		log.Fatalf("Error adding cron job: %v", err)
+	}
+
+	// Cron job to turn database flag 'off' at 6 PM WIB (GMT+7)
+	_, err = c.AddFunc("CRON_TZ=Asia/Jakarta 0 18 * * *", func() {
+		// Implement your logic here to update database to 'off'
+		var RelayStatus models.RelayStatus
+		if err := models.DB.First(&RelayStatus).Error; err != nil {
+			return
+		}
+		RelayStatus.Fan = 0
+		if err := models.DB.Save(&RelayStatus).Error; err != nil {
+			return
+		}
+		fmt.Println("Turning database 'off' at 6 PM WIB")
+	})
+	if err != nil {
+		log.Fatalf("Error adding cron job: %v", err)
+	}
+	c.Start()
+	defer c.Stop()
 
 	iotAPI := r.PathPrefix("/iot").Subrouter()
 	iotAPI.Use(middlewares.APIKEYMiddleware)
