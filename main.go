@@ -36,7 +36,7 @@ func main() {
 		if err := models.DB.First(&RelayStatus).Error; err != nil {
 			return
 		}
-		RelayStatus.Fan = 1
+		RelayStatus.Light = 1
 		if err := models.DB.Save(&RelayStatus).Error; err != nil {
 			return
 		}
@@ -53,7 +53,7 @@ func main() {
 		if err := models.DB.First(&RelayStatus).Error; err != nil {
 			return
 		}
-		RelayStatus.Fan = 0
+		RelayStatus.Light = 0
 		if err := models.DB.Save(&RelayStatus).Error; err != nil {
 			return
 		}
