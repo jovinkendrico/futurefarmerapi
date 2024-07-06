@@ -30,12 +30,16 @@ func main() {
 
 	c := cron.New()
 
-	_, err = c.AddFunc("CRON_TZ=Asia/Jakarta 0 1-23/2 * * *", func() {
+	_, err = c.AddFunc("CRON_TZ=Asia/Jakarta */30 * * * *", func() {
 		var RelayStatus models.RelayStatus
 		if err := models.DB.First(&RelayStatus).Error; err != nil {
 			return
 		}
-		RelayStatus.Light = 1
+		if RelayStatus.Light == 0 {
+			RelayStatus.Light = 1
+		} else {
+			RelayStatus.Light = 0
+		}
 		if err := models.DB.Save(&RelayStatus).Error; err != nil {
 			return
 		}
@@ -46,20 +50,20 @@ func main() {
 	}
 
 	// Cron job to turn database flag 'off' at every even hour
-	_, err = c.AddFunc("CRON_TZ=Asia/Jakarta 0 0-22/2 * * *", func() {
-		var RelayStatus models.RelayStatus
-		if err := models.DB.First(&RelayStatus).Error; err != nil {
-			return
-		}
-		RelayStatus.Light = 0
-		if err := models.DB.Save(&RelayStatus).Error; err != nil {
-			return
-		}
-		fmt.Println("Turning database 'off' at even hours")
-	})
-	if err != nil {
-		log.Fatalf("Error adding cron job: %v", err)
-	}
+	// _, err = c.AddFunc("CRON_TZ=Asia/Jakarta 0 0-22/2 * * *", func() {
+	// 	var RelayStatus models.RelayStatus
+	// 	if err := models.DB.First(&RelayStatus).Error; err != nil {
+	// 		return
+	// 	}
+	// 	RelayStatus.Light = 0
+	// 	if err := models.DB.Save(&RelayStatus).Error; err != nil {
+	// 		return
+	// 	}
+	// 	fmt.Println("Turning database 'off' at even hours")
+	// })
+	// if err != nil {
+	// 	log.Fatalf("Error adding cron job: %v", err)
+	// }
 
 	c.Start()
 	defer c.Stop()
