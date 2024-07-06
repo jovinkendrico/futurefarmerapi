@@ -178,3 +178,41 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	helper.ResponseJSON(w, http.StatusOK, data)
 
 }
+
+func GetRelayHistory(w http.ResponseWriter, r *http.Request) {
+	// Define pagination parameters
+	page, _ := strconv.Atoi(r.URL.Query().Get("page"))
+	pageSize, _ := strconv.Atoi(r.URL.Query().Get("page_size"))
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 20
+	}
+	offset := (page - 1) * pageSize
+
+	// Retrieve relay history records with pagination and sorting by id
+	var totalRecordCount int64
+	var relayHistory []models.RelayHistory
+	models.DB.Model(&models.RelayHistory{}).Count(&totalRecordCount)
+	result := models.DB.Order("id desc").Limit(pageSize).Offset(offset).Find(&relayHistory)
+	if result.Error != nil {
+		http.Error(w, result.Error.Error(), http.StatusInternalServerError)
+		return
+	}
+	// Prepare the response data
+	responseData := struct {
+		PageNumber       int64                 `json:"page_number"`
+		PageSize         int64                 `json:"page_size"`
+		TotalRecordCount int64                 `json:"total_record_count"`
+		Records          []models.RelayHistory `json:"records"`
+	}{
+		PageNumber:       int64(page),
+		PageSize:         int64(pageSize),
+		TotalRecordCount: totalRecordCount,
+		Records:          relayHistory,
+	}
+
+	// Respond with the relay history data
+	helper.ResponseJSON(w, http.StatusOK, responseData)
+}
