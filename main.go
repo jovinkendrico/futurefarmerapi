@@ -37,8 +37,10 @@ func main() {
 		}
 		if RelayStatus.Light == 0 {
 			RelayStatus.Light = 1
+			RelayStatus.Fan = 1
 		} else {
 			RelayStatus.Light = 0
+			RelayStatus.Fan = 0
 		}
 		if err := models.DB.Save(&RelayStatus).Error; err != nil {
 			return
