@@ -43,7 +43,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 
 	// Extract and validate humidity
 	humidityStr := r.FormValue("humidity")
-	humidity, err := strconv.ParseFloat(humidityStr, 64)
+	humidity, err := strconv.ParseInt(humidityStr, 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid humidity value", http.StatusBadRequest)
 		return

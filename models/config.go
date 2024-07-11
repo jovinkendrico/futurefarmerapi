@@ -18,5 +18,5 @@ type LevelConfig struct {
 	Tds              int64   `gorm:"type:integer" json:"tds"`
 	Temperature_low  float64 `gorm:"type:decimal(18,2)" json:"temperature_low"`
 	Temperature_high float64 `gorm:"type:decimal(18,2)" json:"temperature_high"`
-	Humidity         float64 `gorm:"type:decimal(18,2)" json:"humidity"`
+	Humidity         int64   `gorm:"type:decimal(18,2)" json:"humidity"`
 }
