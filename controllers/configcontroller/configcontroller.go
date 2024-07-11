@@ -133,7 +133,7 @@ func UpdateLevelConfig(w http.ResponseWriter, r *http.Request) {
 	var LevelInput struct {
 		Ph_high          float64 `json:"ph_high"`
 		Ph_low           float64 `json:"ph_low"`
-		Tds              float64 `json:"tds"`
+		Tds              int64   `json:"tds"`
 		Temperature_high float64 `json:"temp_high"`
 		Temperature_low  float64 `json:"temp_low"`
 	}

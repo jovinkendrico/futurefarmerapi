@@ -26,7 +26,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 
 	// Extract and validate tds
 	tdsStr := r.FormValue("tds")
-	tds, err := strconv.ParseFloat(tdsStr, 64)
+	tds, err := strconv.ParseInt(tdsStr, 10, 64) // Convert string to int64
 	if err != nil {
 		http.Error(w, "Invalid tds value", http.StatusBadRequest)
 		return
