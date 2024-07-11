@@ -436,7 +436,7 @@ func UpdateRelayNutrisi(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	RelayStatus.Nut_a = RelayInput.Nutrisi
-	RelayStatus.Nut_a = RelayInput.Nutrisi
+	RelayStatus.Nut_b = RelayInput.Nutrisi
 	if err := models.DB.Save(&RelayStatus).Error; err != nil {
 		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
