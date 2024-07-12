@@ -133,7 +133,7 @@ func UpdateLevelConfig(w http.ResponseWriter, r *http.Request) {
 	var LevelInput struct {
 		Ph_high          float64 `json:"ph_high"`
 		Ph_low           float64 `json:"ph_low"`
-		Tds              int64   `json:"tds"`
+		Tds              float64 `json:"tds"`
 		Temperature_high float64 `json:"temp_high"`
 		Temperature_low  float64 `json:"temp_low"`
 	}
@@ -436,7 +436,7 @@ func UpdateRelayNutrisi(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	RelayStatus.Nut_a = RelayInput.Nutrisi
-	RelayStatus.Nut_b = RelayInput.Nutrisi
+	RelayStatus.Nut_a = RelayInput.Nutrisi
 	if err := models.DB.Save(&RelayStatus).Error; err != nil {
 		response := map[string]string{"error": "true", "message": err.Error()}
 		helper.ResponseJSON(w, http.StatusBadRequest, response)
