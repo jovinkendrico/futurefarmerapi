@@ -72,19 +72,32 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 
 	now := time.Now()
 	checkInterval := -3 * time.Hour
+	compareDataTimes := 5
 
 	var phUpHistory models.RelayHistory
 	result = models.DB.Where("type = ?", "PH UP").Order("created_at DESC").First(&phUpHistory)
 
+	var sensorDatas []models.SensorData
+	models.DB.Order("created_at DESC").Limit(5).Find(&sensorDatas)
+
 	if result.Error != nil || phUpHistory.CreatedAt.Before(now.Add(checkInterval)) {
 		if ph < levelConfig.Ph_low && relayStatus.Is_manual_1 == 0 {
-			relayStatus.Ph_up = 1
-			var relayHistory models.RelayHistory
-			relayHistory.Type = "PH UP"
-			relayHistory.Status = "ON"
-			err := models.DB.Create(&relayHistory).Error
-			if err != nil {
-				panic("failed to insert relay history record")
+			validCount := 0
+			for _, sensorData := range sensorDatas {
+				if sensorData.Ph < levelConfig.Ph_low {
+					validCount++
+				}
+			}
+
+			if validCount >= compareDataTimes {
+				relayStatus.Ph_up = 1
+				var relayHistory models.RelayHistory
+				relayHistory.Type = "PH UP"
+				relayHistory.Status = "ON"
+				err := models.DB.Create(&relayHistory).Error
+				if err != nil {
+					panic("failed to insert relay history record")
+				}
 			}
 		}
 	}
@@ -93,27 +106,17 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	result = models.DB.Where("type = ?", "PH DOWN").Order("created_at DESC").First(&phDownHistory)
 	if result.Error != nil || phDownHistory.CreatedAt.Before(now.Add(checkInterval)) {
 		if ph > levelConfig.Ph_high && relayStatus.Is_manual_2 == 0 {
-			relayStatus.Ph_down = 1
-			relayHistory := models.RelayHistory{
-				Type:   "PH DOWN",
-				Status: "ON",
+			validCount := 0
+			for _, sensorData := range sensorDatas {
+				if sensorData.Ph > levelConfig.Ph_high {
+					validCount++
+				}
 			}
-			result := models.DB.Create(&relayHistory).Error
-			if result != nil {
-				panic("failed to insert relay history record")
-			}
-		}
-	}
 
-	if tds < levelConfig.Tds {
-		var nutAHistory models.RelayHistory
-		result = models.DB.Where("type = ?", "NUTRISI A").Order("created_at DESC").First(&nutAHistory)
-		if result.Error != nil || nutAHistory.CreatedAt.Before(now.Add(checkInterval)) {
-			if relayStatus.Is_manual_3 == 0 {
-				relayStatus.Nut_a = 1
-
+			if validCount >= compareDataTimes {
+				relayStatus.Ph_down = 1
 				relayHistory := models.RelayHistory{
-					Type:   "NUTRISI A",
+					Type:   "PH DOWN",
 					Status: "ON",
 				}
 				result := models.DB.Create(&relayHistory).Error
@@ -122,19 +125,47 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 		}
+	}
 
-		var nutBHistory models.RelayHistory
-		result = models.DB.Where("type = ?", "NUTRISI B").Order("created_at DESC").First(&nutBHistory)
-		if result.Error != nil || nutBHistory.CreatedAt.Before(now.Add(checkInterval)) {
-			if relayStatus.Is_manual_4 == 0 {
-				relayStatus.Nut_b = 1
-				relayHistory_2 := models.RelayHistory{
-					Type:   "NUTRISI B",
-					Status: "ON",
+	if tds < levelConfig.Tds {
+		var nutAHistory models.RelayHistory
+		result = models.DB.Where("type = ?", "NUTRISI A").Order("created_at DESC").First(&nutAHistory)
+		
+		validCount := 0
+		for _, sensorData := range sensorDatas {
+			if sensorData.Tds < levelConfig.Tds {
+				validCount++
+			}
+		}
+
+		if validCount >= compareDataTimes {
+			if result.Error != nil || nutAHistory.CreatedAt.Before(now.Add(checkInterval)) {
+				if relayStatus.Is_manual_3 == 0 {
+					relayStatus.Nut_a = 1
+					relayHistory := models.RelayHistory{
+						Type:   "NUTRISI A",
+						Status: "ON",
+					}
+					result := models.DB.Create(&relayHistory).Error
+					if result != nil {
+						panic("failed to insert relay history record")
+					}
 				}
-				result_2 := models.DB.Create(&relayHistory_2).Error
-				if result_2 != nil {
-					panic("failed to insert relay history record")
+			}
+
+			var nutBHistory models.RelayHistory
+			result = models.DB.Where("type = ?", "NUTRISI B").Order("created_at DESC").First(&nutBHistory)
+			if result.Error != nil || nutBHistory.CreatedAt.Before(now.Add(checkInterval)) {
+				if relayStatus.Is_manual_4 == 0 {
+					relayStatus.Nut_b = 1
+					relayHistory_2 := models.RelayHistory{
+						Type:   "NUTRISI B",
+						Status: "ON",
+					}
+					result_2 := models.DB.Create(&relayHistory_2).Error
+					if result_2 != nil {
+						panic("failed to insert relay history record")
+					}
 				}
 			}
 		}
